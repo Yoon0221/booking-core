@@ -1,0 +1,18 @@
+package io.jiyoon.booking_core.apiPayload.status;
+
+import io.jiyoon.booking_core.apiPayload.code.ResponseCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@AllArgsConstructor
+public enum SuccessStatus implements ResponseCode {
+
+    SUCCESS(HttpStatus.OK, "COMMON_200", "성공입니다.");
+
+    private final HttpStatus httpStatus;
+    private final String code;
+    private final String message;
+
+}
