@@ -16,6 +16,23 @@ public enum ErrorStatus implements ResponseCode {
     COMMON_FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON_403", "접근 권한이 없습니다."),
     COMMON_METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_405", "지원하지 않는 HTTP Method 입니다."),
 
+    // BOOKING
+    BOOKING_CONFIRM_INVALID(HttpStatus.BAD_REQUEST, "BOOKING_4001", "예약 확정이 불가능한 상태입니다."),
+    BOOKING_FAIL_INVALID(HttpStatus.BAD_REQUEST, "BOOKING_4002", "예약 실패 처리가 불가능한 상태입니다."),
+
+    // PAYMENT
+    PAYMENT_SUCCESS_INVALID(HttpStatus.BAD_REQUEST, "PAYMENT_4001", "결제 성공 처리가 불가능한 상태입니다."),
+    PAYMENT_FAIL_INVALID(HttpStatus.BAD_REQUEST, "PAYMENT_4002", "결제 실패 처리가 불가능한 상태입니다."),
+    PAYMENT_CANCEL_INVALID(HttpStatus.BAD_REQUEST, "PAYMENT_4003", "결제 취소 처리가 불가능한 상태입니다."),
+
+    // PRODUCT
+    PRODUCT_SOLD_OUT(HttpStatus.BAD_REQUEST, "PRODUCT_4001", "재고가 부족합니다."),
+    PRODUCT_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "PRODUCT_4002", "판매 가능한 상품 상태가 아닙니다."),
+
+    // POINT
+    POINT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "POINT_4001", "포인트가 부족합니다."),
+    INVALID_POINT_AMOUNT(HttpStatus.BAD_REQUEST, "POINT_4002", "유효하지 않은 포인트 금액입니다.")
+
     ;
 
     private final HttpStatus httpStatus;
