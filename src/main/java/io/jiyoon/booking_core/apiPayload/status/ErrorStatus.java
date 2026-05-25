@@ -28,6 +28,8 @@ public enum ErrorStatus implements ResponseCode {
     // PRODUCT
     PRODUCT_SOLD_OUT(HttpStatus.BAD_REQUEST, "PRODUCT_4001", "재고가 부족합니다."),
     PRODUCT_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "PRODUCT_4002", "판매 가능한 상품 상태가 아닙니다."),
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_4041", "상품을 찾을 수 없습니다."),
+    PRODUCT_NOT_ON_SALE(HttpStatus.BAD_REQUEST, "PRODUCT_4003", "판매 시작 전 상품입니다."),
 
     // POINT
     POINT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "POINT_4001", "포인트가 부족합니다."),

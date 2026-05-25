@@ -24,6 +24,13 @@ public class UserPoint extends BaseEntity {
     @Column(nullable = false)
     private Long version;
 
+    public static UserPoint empty(Long userId) {
+        return UserPoint.builder()
+                .userId(userId)
+                .balance(BigDecimal.ZERO)
+                .build();
+    }
+
     public void use(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new CustomException(ErrorStatus.INVALID_POINT_AMOUNT);

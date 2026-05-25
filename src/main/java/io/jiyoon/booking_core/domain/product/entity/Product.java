@@ -45,9 +45,19 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Long version;
 
+    public boolean isReservable() {
+        return status == ProductStatus.ACTIVE
+                && remainingStock > 0
+                && !LocalDateTime.now().isBefore(saleStartAt);
+    }
+
     public void decreaseStock() {
         if (status != ProductStatus.ACTIVE) {
             throw new CustomException(ErrorStatus.PRODUCT_NOT_ACTIVE);
+        }
+
+        if (LocalDateTime.now().isBefore(saleStartAt)) {
+            throw new CustomException(ErrorStatus.PRODUCT_NOT_ON_SALE);
         }
 
         if (remainingStock <= 0) {
