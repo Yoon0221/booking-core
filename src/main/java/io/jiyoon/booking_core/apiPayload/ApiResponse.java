@@ -1,6 +1,7 @@
 package io.jiyoon.booking_core.apiPayload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.jiyoon.booking_core.apiPayload.code.ResponseCode;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,9 @@ import lombok.Getter;
 @JsonPropertyOrder({"isSuccess", "code", "message", "result"})
 public class ApiResponse<T> {
 
-    private final boolean isSuccess;
+    @JsonProperty("isSuccess")
+    private final boolean success;
+
     private final String code;
     private final String message;
 
