@@ -8,10 +8,6 @@ import io.jiyoon.booking_core.domain.booking.converter.BookingConverter;
 import io.jiyoon.booking_core.domain.booking.entity.Booking;
 import io.jiyoon.booking_core.domain.booking.entity.BookingStatus;
 import io.jiyoon.booking_core.domain.booking.repository.BookingRepository;
-import io.jiyoon.booking_core.domain.payment.converter.PaymentConverter;
-import io.jiyoon.booking_core.domain.payment.entity.Payment;
-import io.jiyoon.booking_core.domain.payment.entity.PaymentMethod;
-import io.jiyoon.booking_core.domain.payment.repository.PaymentRepository;
 import io.jiyoon.booking_core.domain.product.entity.Product;
 import io.jiyoon.booking_core.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +21,6 @@ public class BookingServiceImpl implements BookingService {
     private final TicketingRedisService ticketingRedisService;
     private final ProductRepository productRepository;
     private final BookingRepository bookingRepository;
-    private final PaymentRepository paymentRepository;
-    private final PaymentConverter paymentConverter;
     private final BookingConverter bookingConverter;
 
     @Override
@@ -61,54 +55,6 @@ public class BookingServiceImpl implements BookingService {
 
             default -> throw new CustomException(ErrorStatus.COMMON_INTERNAL_SERVER_ERROR);
         };
-    }
-
-    @Override
-    @Transactional
-    public String pay(Long productId, Long userId) {
-
-        // Redis 기반 결제 가능 여부 검증 (TTL / 예약 상태 확인) + 결제 완료 처리
-        boolean canPay = ticketingRedisService.tryPay(productId, userId);
-
-        if (!canPay) {
-            throw new CustomException(ErrorStatus.PAYMENT_FAIL_INVALID);
-        }
-
-        // 해당 유저의 INIT 예약 조회
-        Booking booking = bookingRepository.findByProductIdAndUserIdAndStatus(
-                        productId,
-                        userId,
-                        BookingStatus.INIT
-                )
-                .orElseThrow(() -> new CustomException(ErrorStatus.BOOKING_CONFIRM_INVALID));
-
-        // 결제 상태 PENDING 전환
-        booking.markPaymentPending();
-
-        // Payment 엔티티 생성 (아직 외부 PG 없음 → 내부 상태 모델링만)
-        Payment payment = paymentConverter.toPayment(
-                booking,
-                PaymentMethod.CARD,
-                booking.getTotalAmount()
-        );
-
-        // Booking ↔ Payment 연관관계 연결
-        booking.addPayment(payment);
-
-        // 결제 성공 처리
-        payment.success();
-
-        // 예약 확정 처리
-        booking.confirm();
-
-        // 재고 차감 (최종 확정 시점)
-        Product product = booking.getProduct();
-        product.decreaseStock();
-
-        // Payment 저장 (Booking은 영속 상태라 dirty checking)
-        paymentRepository.save(payment);
-
-        return "PAYMENT_SUCCESS";
     }
 
 }

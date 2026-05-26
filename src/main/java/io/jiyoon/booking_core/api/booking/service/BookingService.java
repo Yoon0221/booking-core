@@ -11,10 +11,4 @@ public interface BookingService {
      */
     BookingResponse reserve(Long productId, Long userId);
 
-    /**
-     * 결제 처리
-     * - Redis 결제 가능 여부 검증
-     * - Booking → Payment 생성 및 확정
-     */
-    String pay(Long productId, Long userId);
 }

@@ -8,8 +8,9 @@
 1. Docker Desktop 설치
 2. Redis 실행
    docker run -d --name redis -p 6379:6379 redis:7
-3. Spring Boot 실행
-4. data.sql 실행 (초기 데이터 세팅)
+3. 환경 변수 세팅 
+4. Spring Boot 실행
+5. data.sql 실행 (초기 데이터 세팅)
 
 ---
 
