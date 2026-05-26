@@ -16,6 +16,9 @@ public enum ErrorStatus implements ResponseCode {
     COMMON_FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON_403", "접근 권한이 없습니다."),
     COMMON_METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_405", "지원하지 않는 HTTP Method 입니다."),
 
+    // REDIS
+    REDIS_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE,"REDIS_503","예약 시스템을 일시적으로 사용할 수 없습니다."),
+
     // BOOKING
     BOOKING_CONFIRM_INVALID(HttpStatus.BAD_REQUEST, "BOOKING_4001", "예약 확정이 불가능한 상태입니다."),
     BOOKING_FAIL_INVALID(HttpStatus.BAD_REQUEST, "BOOKING_4002", "예약 실패 처리가 불가능한 상태입니다."),

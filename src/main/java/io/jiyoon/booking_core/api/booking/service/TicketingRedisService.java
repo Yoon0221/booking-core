@@ -1,6 +1,8 @@
 package io.jiyoon.booking_core.api.booking.service;
 
 import io.jiyoon.booking_core.api.booking.dto.ReserveResult;
+import io.jiyoon.booking_core.apiPayload.code.exception.CustomException;
+import io.jiyoon.booking_core.apiPayload.status.ErrorStatus;
 import io.jiyoon.booking_core.domain.booking.entity.ReserveStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,31 +29,35 @@ public class TicketingRedisService {
      * @return 예약 결과 상태 + 남은 시간
      */
     public ReserveResult tryReserve(Long productId, Long userId) {
+        try {
+            // Redis Key 구성
+            String pendingKey = buildPendingKey(productId);     // 예약 대기
+            String completedKey = buildCompletedKey(productId); // 결제 완료
 
-        // Redis Key 구성
-        String pendingKey = buildPendingKey(productId);     // 예약 대기
-        String completedKey = buildCompletedKey(productId); // 결제 완료
+            // Lua 스크립트 실행 (원자적 처리)
+            List<Long> result = redisTemplate.execute(
+                    reserveScript,
+                    List.of(pendingKey, completedKey),
+                    String.valueOf(userId),
+                    String.valueOf(LIMIT),
+                    String.valueOf(TTL_SECONDS)
+            );
 
-        // Lua 스크립트 실행 (원자적 처리)
-        List<Long> result = redisTemplate.execute(
-                reserveScript,
-                List.of(pendingKey, completedKey),
-                String.valueOf(userId),
-                String.valueOf(LIMIT),
-                String.valueOf(TTL_SECONDS)
-        );
+            // Lua 실행 실패 또는 반환값 이상
+            if (result == null || result.size() < 2) {
+                return new ReserveResult(ReserveStatus.ERROR, 0L);
+            }
 
-        // Lua 실행 실패 또는 반환값 이상
-        if (result == null || result.size() < 2) {
-            return new ReserveResult(ReserveStatus.ERROR, 0L);
+            // Lua 반환값 파싱
+            int statusCode = result.get(0).intValue();  // 상태 코드
+            long remainMillis = result.get(1);          // 남은 TTL(ms)
+
+            // 상태 코드 → enum 매핑
+            return new ReserveResult(mapStatus(statusCode), remainMillis);
+
+        } catch (Exception e) {
+            throw new CustomException(ErrorStatus.REDIS_UNAVAILABLE);
         }
-
-        // Lua 반환값 파싱
-        int statusCode = result.get(0).intValue();  // 상태 코드
-        long remainMillis = result.get(1);          // 남은 TTL(ms)
-
-        // 상태 코드 → enum 매핑
-        return new ReserveResult(mapStatus(statusCode), remainMillis);
     }
 
     /**
