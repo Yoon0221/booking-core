@@ -20,10 +20,6 @@ public class UserPoint extends BaseEntity {
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal balance;
 
-    @Version
-    @Column(nullable = false)
-    private Long version;
-
     public static UserPoint empty(Long userId) {
         return UserPoint.builder()
                 .userId(userId)
@@ -33,7 +29,7 @@ public class UserPoint extends BaseEntity {
 
     public void use(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new CustomException(ErrorStatus.INVALID_POINT_AMOUNT);
+            throw new CustomException(ErrorStatus.POINT_INVALID_AMOUNT);
         }
 
         if (balance.compareTo(amount) < 0) {
@@ -45,7 +41,7 @@ public class UserPoint extends BaseEntity {
 
     public void restore(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new CustomException(ErrorStatus.INVALID_POINT_AMOUNT);
+            throw new CustomException(ErrorStatus.POINT_INVALID_AMOUNT);
         }
 
         this.balance = this.balance.add(amount);

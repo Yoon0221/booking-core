@@ -35,38 +35,29 @@ public class Payment extends BaseEntity {
     @Builder.Default
     private PaymentStatus status = PaymentStatus.READY;
 
-    @Column(length = 100)
-    private String transactionId;
-
-    @Column(length = 255)
-    private String failureReason;
-
-    public void success(String transactionId) {
+    public void success() {
         if (this.status != PaymentStatus.READY) {
             throw new CustomException(ErrorStatus.PAYMENT_SUCCESS_INVALID);
         }
 
         this.status = PaymentStatus.SUCCESS;
-        this.transactionId = transactionId;
     }
 
-    public void fail(String reason) {
+    public void fail() {
         if (this.status != PaymentStatus.READY) {
             throw new CustomException(ErrorStatus.PAYMENT_FAIL_INVALID);
         }
 
         this.status = PaymentStatus.FAILED;
-        this.failureReason = reason;
     }
 
-    public void cancel(String reason) {
+    public void cancel() {
         if (this.status != PaymentStatus.READY &&
                 this.status != PaymentStatus.SUCCESS) {
             throw new CustomException(ErrorStatus.PAYMENT_CANCEL_INVALID);
         }
 
         this.status = PaymentStatus.CANCELLED;
-        this.failureReason = reason;
     }
 
     public void assignBooking(Booking booking) {

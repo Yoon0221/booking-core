@@ -41,10 +41,6 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 30)
     private ProductStatus status;
 
-    @Version
-    @Column(nullable = false)
-    private Long version;
-
     public boolean isReservable() {
         return status == ProductStatus.ACTIVE
                 && remainingStock > 0
