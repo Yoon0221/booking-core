@@ -1,6 +1,6 @@
 package io.jiyoon.booking_core.api.booking.service;
 
-import io.jiyoon.booking_core.domain.payment.dto.PaymentRequestDto;
+import io.jiyoon.booking_core.api.booking.dto.PaymentRequestDto;
 
 public interface BookingPayService {
 

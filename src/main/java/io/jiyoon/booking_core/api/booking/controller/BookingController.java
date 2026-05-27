@@ -4,7 +4,7 @@ import io.jiyoon.booking_core.api.booking.dto.BookingResponse;
 import io.jiyoon.booking_core.api.booking.service.BookingService;
 import io.jiyoon.booking_core.apiPayload.ApiResponse;
 import io.jiyoon.booking_core.apiPayload.status.SuccessStatus;
-import io.jiyoon.booking_core.domain.payment.dto.PaymentRequestDto;
+import io.jiyoon.booking_core.api.booking.dto.PaymentRequestDto;
 import io.jiyoon.booking_core.api.booking.service.BookingPayService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

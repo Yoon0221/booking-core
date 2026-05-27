@@ -1,4 +1,4 @@
-package io.jiyoon.booking_core.domain.payment.dto;
+package io.jiyoon.booking_core.api.booking.dto;
 
 import io.jiyoon.booking_core.domain.payment.entity.PaymentMethod;
 import java.math.BigDecimal;

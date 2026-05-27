@@ -4,7 +4,7 @@ import io.jiyoon.booking_core.api.booking.dto.BookingResponse;
 import io.jiyoon.booking_core.api.booking.dto.ReserveResult;
 import io.jiyoon.booking_core.apiPayload.code.exception.CustomException;
 import io.jiyoon.booking_core.apiPayload.status.ErrorStatus;
-import io.jiyoon.booking_core.domain.booking.converter.BookingConverter;
+import io.jiyoon.booking_core.api.booking.converter.BookingConverter;
 import io.jiyoon.booking_core.domain.booking.entity.Booking;
 import io.jiyoon.booking_core.domain.booking.entity.BookingStatus;
 import io.jiyoon.booking_core.domain.booking.repository.BookingRepository;

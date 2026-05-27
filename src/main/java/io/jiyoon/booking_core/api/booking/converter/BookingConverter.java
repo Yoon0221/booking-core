@@ -1,4 +1,4 @@
-package io.jiyoon.booking_core.domain.booking.converter;
+package io.jiyoon.booking_core.api.booking.converter;
 
 import io.jiyoon.booking_core.domain.booking.entity.Booking;
 import io.jiyoon.booking_core.domain.booking.entity.BookingStatus;

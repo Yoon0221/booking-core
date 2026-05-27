@@ -3,7 +3,7 @@ package io.jiyoon.booking_core.domain.booking.entity;
 import io.jiyoon.booking_core.apiPayload.code.exception.CustomException;
 import io.jiyoon.booking_core.apiPayload.status.ErrorStatus;
 import io.jiyoon.booking_core.domain.payment.entity.Payment;
-import io.jiyoon.booking_core.entity.BaseEntity;
+import io.jiyoon.booking_core.domain.BaseEntity;
 import io.jiyoon.booking_core.domain.product.entity.Product;
 import lombok.*;
 import jakarta.persistence.*;
