@@ -40,7 +40,7 @@ public class TicketingRedisService {
                     List.of(pendingKey, completedKey),
                     String.valueOf(userId),
                     String.valueOf(LIMIT),
-                    String.valueOf(TTL_SECONDS)
+                    String.valueOf(TTL_SECONDS * 1000L)
             );
 
             // Lua 실행 실패 또는 반환값 이상
@@ -96,11 +96,11 @@ public class TicketingRedisService {
     // Lua 상태코드를 비즈니스 상태로 변환
     private ReserveStatus mapStatus(int code) {
         return switch (code) {
-            case 0 -> ReserveStatus.SUCCESS;          // 예약 성공
-            case 1 -> ReserveStatus.ALREADY_RESERVED; // 이미 예약됨
-            case 2 -> ReserveStatus.SOLD_OUT;         // 매진
-            case 3 -> ReserveStatus.ALREADY_PAID;     // 이미 결제됨
-            default -> ReserveStatus.ERROR;           // 알 수 없는 오류
+            case 0 -> ReserveStatus.SUCCESS;            // 예약 성공
+            case -1 -> ReserveStatus.ALREADY_RESERVED;  // 이미 예약됨
+            case -2 -> ReserveStatus.ALREADY_PAID;      // 이미 결제됨
+            case -3 -> ReserveStatus.SOLD_OUT;          // 매진
+            default -> ReserveStatus.ERROR;             // 알 수 없는 오류
         };
     }
 
