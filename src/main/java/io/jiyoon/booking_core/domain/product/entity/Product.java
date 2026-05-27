@@ -2,7 +2,7 @@ package io.jiyoon.booking_core.domain.product.entity;
 
 import io.jiyoon.booking_core.apiPayload.code.exception.CustomException;
 import io.jiyoon.booking_core.apiPayload.status.ErrorStatus;
-import io.jiyoon.booking_core.entity.BaseEntity;
+import io.jiyoon.booking_core.domain.BaseEntity;
 import lombok.*;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -40,10 +40,6 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private ProductStatus status;
-
-    @Version
-    @Column(nullable = false)
-    private Long version;
 
     public boolean isReservable() {
         return status == ProductStatus.ACTIVE

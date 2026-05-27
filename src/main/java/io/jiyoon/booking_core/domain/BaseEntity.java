@@ -1,4 +1,4 @@
-package io.jiyoon.booking_core.entity;
+package io.jiyoon.booking_core.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

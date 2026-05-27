@@ -3,7 +3,7 @@ package io.jiyoon.booking_core.domain.booking.entity;
 import io.jiyoon.booking_core.apiPayload.code.exception.CustomException;
 import io.jiyoon.booking_core.apiPayload.status.ErrorStatus;
 import io.jiyoon.booking_core.domain.payment.entity.Payment;
-import io.jiyoon.booking_core.entity.BaseEntity;
+import io.jiyoon.booking_core.domain.BaseEntity;
 import io.jiyoon.booking_core.domain.product.entity.Product;
 import lombok.*;
 import jakarta.persistence.*;
@@ -22,9 +22,6 @@ public class Booking extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String bookingNumber;
-
     @Column(nullable = false)
     private Long userId;
 
@@ -40,32 +37,20 @@ public class Booking extends BaseEntity {
     @Builder.Default
     private BookingStatus status = BookingStatus.INIT;
 
-    @Column(nullable = false, unique = true)
-    private String idempotencyKey;
-
-    private String failureReason;
-
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Payment> payments = new ArrayList<>();
 
     public void confirm() {
-        if (this.status != BookingStatus.INIT &&
-                this.status != BookingStatus.PAYMENT_PENDING) {
-            throw new CustomException(ErrorStatus.BOOKING_CONFIRM_INVALID);
-        }
-
         this.status = BookingStatus.CONFIRMED;
     }
 
-    public void fail(String reason) {
-        if (this.status == BookingStatus.CONFIRMED ||
-                this.status == BookingStatus.CANCELLED) {
+    public void fail() {
+        if (this.status != BookingStatus.PAYMENT_PENDING) {
             throw new CustomException(ErrorStatus.BOOKING_FAIL_INVALID);
         }
 
         this.status = BookingStatus.FAILED;
-        this.failureReason = reason;
     }
 
     public void addPayment(Payment payment) {
