@@ -104,4 +104,10 @@ public class TicketingRedisService {
         };
     }
 
+    // 결제 완료(completed) 세트에서 유저 제거 (롤백용)
+    public void removeCompleted(Long productId, Long userId) {
+        String completedKey = buildCompletedKey(productId);
+        redisTemplate.opsForSet().remove(completedKey, String.valueOf(userId));
+    }
+
 }

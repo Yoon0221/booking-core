@@ -42,10 +42,6 @@ public class Booking extends BaseEntity {
     private List<Payment> payments = new ArrayList<>();
 
     public void confirm() {
-        if (this.status != BookingStatus.PAYMENT_PENDING) {
-            throw new CustomException(ErrorStatus.BOOKING_CONFIRM_INVALID);
-        }
-
         this.status = BookingStatus.CONFIRMED;
     }
 
