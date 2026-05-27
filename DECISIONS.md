@@ -219,3 +219,69 @@ DB로 전달되는 실제 쓰기 요청 수를 극단적으로 줄일 수 있었
 - 애플리케이션 전체 안정성 확보
 
 </details>
+
+
+## 공정성(Fairness) 구조 검토
+<details>
+
+### 상황
+초기에는 완전한 선착순 보장을 위해 아래와 같은 
+Queue + Worker 기반 FIFO 구조를 고려했습니다.
+```text
+Client Request
+      │
+      ▼
+Redis Queue (FIFO)
+      │
+      ▼
+Worker
+      │
+      ▼
+Redis Lua Gate
+      │
+      ▼
+DB Write
+```
+해당 방식은 요청 순서 기반 처리로 높은 공정성을 제공할 수 있습니다.
+
+### 선택
+최종적으로는 Queue + Worker 구조를 도입하지 않고,
+기존 Redis Lua 기반 즉시 처리 구조를 유지했습니다.
+```text
+Client Request
+      │
+      ▼
+Redis Lua Gate
+      │
+ ┌────┴────┐
+ ▼         ▼
+FAIL     SUCCESS
+            │
+            ▼
+         DB Write
+```
+
+### 이유
+완전 FIFO를 보장하려면 사실상 단일 Worker 기반 직렬 처리가 필요합니다.
+하지만 이 경우,
+Worker 자체가 병목 지점이 될 수 있고
+Queue 적체 가능성이 증가하며
+순간적인 500~1000 TPS Burst Traffic 대응력이 낮아질 수 있다고 판단했습니다.
+
+또한 Worker를 여러 대로 확장하면 처리 순서가 달라질 수 있어,
+오히려 완전한 FIFO 보장이 어려워질 수 있습니다.
+
+반면 Redis는 단일 스레드 기반으로 명령을 직렬 처리하며,
+Lua Script 역시 원자적으로 실행됩니다.
+
+따라서 완전 FIFO 수준은 아니더라도
+- 재고 정합성 보장
+- Race Condition 제거
+- 빠른 실패 처리(Fail Fast)
+- DB 부하 감소
+측면에서는 충분히 합리적인 구조라고 판단했습니다.
+
+이번 과제에서는 절대적 FIFO 공정성보다,
+시스템 안정성과 고부하 대응을 우선 목표로 선택했습니다.
+
+</details>
